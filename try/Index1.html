@@ -1,0 +1,240 @@
+<!-- services-grid.html -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Services Grid — Stackcraft Labs (demo)</title>
+<style>
+  :root{
+    --bg:#f3f5f8;
+    --panel:#ffffff;
+    --muted:#6b7280;
+    --accent:#0b69ff;
+    --card-radius:16px;
+    --gap:20px;
+    --pad:26px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  body{margin:0;background:var(--bg);color:#0b1220;-webkit-font-smoothing:antialiased}
+  .container{max-width:1180px;margin:28px auto;padding:20px}
+  .panel{background:var(--panel);border-radius:22px;padding:var(--pad);box-shadow:0 10px 30px rgba(10,20,40,0.06);border:1px solid rgba(10,20,40,0.03)}
+  .header{display:flex;align-items:flex-start;gap:18px;margin-bottom:18px}
+  .title{font-size:22px;margin:0 0 6px 0;font-weight:700}
+  .subtitle{color:var(--muted);margin:0;font-size:14px;max-width:640px}
+  /* grid mosaic similar to screenshot */
+  .mosaic{display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-template-rows:auto auto;gap:var(--gap);align-items:start}
+  .card{background:linear-gradient(180deg,#ffffff,#fbfdff);border-radius:14px;padding:18px;box-shadow:0 8px 20px rgba(10,20,40,0.04);border:1px solid rgba(10,20,40,0.03);display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}
+  .card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(10,20,40,0.08)}
+  .label{display:inline-block;background:#eef6ff;color:#0b69ff;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;align-self:flex-start}
+  .card h3{margin:0;font-size:16px}
+  .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+  .meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+  .price{color:var(--accent);font-weight:700;font-size:13px}
+  .cta-small{background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer;font-size:14px}
+  /* layout variations to mimic screenshot's mixed sizes */
+  .card.big{grid-row:1 / span 2;min-height:280px}
+  .card.tall{min-height:180px}
+  /* trust strip */
+  .trust{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:13px;margin-top:18px}
+  .case-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .case{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 16px rgba(10,20,40,0.04);min-width:220px}
+  /* modal */
+  .backdrop{position:fixed;inset:0;background:rgba(3,7,18,0.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+  .modal{background:#fff;border-radius:12px;padding:16px;max-width:720px;width:100%;box-shadow:0 30px 80px rgba(2,6,23,0.45)}
+  .modal h4{margin:0 0 6px 0}
+  .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  input,select,textarea{padding:10px;border-radius:8px;border:1px solid #e6eef6;width:100%;box-sizing:border-box}
+  button.btn-primary{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer}
+  button.btn-ghost{background:transparent;border:1px solid #e6eef6;padding:9px 12px;border-radius:8px}
+  /* responsive */
+  @media (max-width:1000px){
+    .mosaic{grid-template-columns:1fr 1fr}
+    .card.big{grid-row:auto;min-height:200px}
+  }
+  @media (max-width:640px){
+    .mosaic{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel" role="region" aria-labelledby="services-title">
+      <div class="header">
+        <div style="flex:1">
+          <h2 id="services-title" class="title">Professional Services That Showcase Our Expertise.</h2>
+          <p class="subtitle">From startups to SMEs and SaaS — MVP sprints, data & automation, and growth engineering. Pick a path and we’ll show outcomes and price up front.</p>
+        </div>
+      </div>
+
+      <div class="mosaic" role="list">
+        <!-- Big left card - Proof of value / POC -->
+        <article role="listitem" class="card big" data-card="poc" tabindex="0" aria-label="Proof of Value 7 days" onclick="openModal('poc')">
+          <div>
+            <div class="label">POC</div>
+            <h3>Proof-of-Value — 7 days</h3>
+            <p>3 filings → structured data + 3-page PDF report. Validate assumptions fast and reduce investor risk.</p>
+          </div>
+          <div style="margin-top:auto">
+            <div class="meta">
+              <div class="price">From ₹40,000</div>
+              <button class="cta-small" onclick="openModal('poc', event)">Start PoC</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Top middle card -->
+        <article role="listitem" class="card tall" data-card="outstaff" tabindex="0" aria-label="Outstaffing" onclick="openModal('outstaff')">
+          <div>
+            <div class="label" style="background:#fff;color:#0b1220;border:1px solid #eef2ff">Team</div>
+            <h3>Outstaffing & rapid teams</h3>
+            <p>Specialist teams on demand — plug into your project in 48 hours. Scale dev capacity without long hiring cycles.</p>
+          </div>
+          <div style="margin-top:auto">
+            <div class="meta">
+              <div class="price">Starting ₹35k/mo</div>
+              <button class="cta-small" onclick="openModal('outstaff', event)">Request Team</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Top right card (image style in original) -->
+        <article role="listitem" class="card tall" data-card="ux" tabindex="0" aria-label="UX & UI" onclick="openModal('ux')">
+          <div>
+            <div style="height:86px;border-radius:8px;background:linear-gradient(135deg,#f8fafc,#eef2ff);display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <!-- SVG placeholder for screenshot -->
+              <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="60" rx="8" fill="#eef5ff"/><circle cx="20" cy="30" r="8" fill="#dbeafe"/><rect x="40" y="20" width="68" height="20" rx="4" fill="#f8fafc"/></svg>
+            </div>
+            <h3>UX & UI design</h3>
+            <p>Designs that convert — customer journeys, product flows and polished UI for investor demos and users.</p>
+          </div>
+          <div style="margin-top:auto">
+            <div class="meta">
+              <div class="price">Design sprints from ₹60k</div>
+              <button class="cta-small" onclick="openModal('ux', event)">See Design</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Middle bottom card -->
+        <article role="listitem" class="card" data-card="web" tabindex="0" aria-label="Web dev" onclick="openModal('web')">
+          <div>
+            <div class="label">Web</div>
+            <h3>Website & Web App development</h3>
+            <p>Fast, secure, and responsive builds for startups and SMEs — landing → payments → analytics.</p>
+          </div>
+          <div style="margin-top:auto">
+            <div class="meta">
+              <div class="price">Sites from ₹25k</div>
+              <button class="cta-small" onclick="openModal('web', event)">Get Quote</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Right bottom small card -->
+        <article role="listitem" class="card" data-card="sme" tabindex="0" aria-label="SME automation" onclick="openModal('sme')">
+          <div>
+            <div class="label">SME</div>
+            <h3>SME Ops — Automate in 30 days</h3>
+            <p>Invoicing, order flows & CRM integration — cut manual work and errors by 60%+.</p>
+          </div>
+          <div style="margin-top:auto">
+            <div class="meta">
+              <div class="price">From ₹70k</div>
+              <button class="cta-small" onclick="openModal('sme', event)">Get Plan</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="trust">
+        <div style="flex:1;color:var(--muted)">50+ projects • 20 countries • 90% repeat clients</div>
+      </div>
+
+      <div class="case-row" aria-hidden="false" style="margin-top:14px">
+        <div class="case"><strong>Fintech — Onboarding lift</strong><div style="color:var(--muted);margin-top:6px">Reduced onboarding time 45% — 8 week MVP</div></div>
+        <div class="case"><strong>Retail SaaS — Trial→Paid</strong><div style="color:var(--muted);margin-top:6px">Trial-to-paid increased 2.4× after onboarding rebuild</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h4 id="modalTitle">Plan</h4>
+        <button class="btn-ghost" aria-label="Close" onclick="closeModal()">✕</button>
+      </div>
+      <div id="modalContent" style="margin-top:12px;color:var(--muted)"></div>
+      <form id="bookingForm" style="margin-top:12px" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <input id="name" name="name" type="text" placeholder="Your name" required>
+          <input id="email" name="email" type="email" placeholder="Email" required>
+        </div>
+        <div class="form-row">
+          <input id="companyName" name="company" placeholder="Company / product">
+          <select id="budget" name="budget" required>
+            <option value="">Budget range</option>
+            <option value="under50k">Under ₹50k</option>
+            <option value="50k-2.5l">₹50k – ₹2.5L</option>
+            <option value="2.5l+">₹2.5L+</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button type="button" class="btn-ghost" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Request follow-up</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+  // data-layer track stub for GTM
+  function trackEvent(name, payload){
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(Object.assign({event:name, ts:Date.now()}, payload || {}));
+    console.log('trackEvent', name, payload || {});
+  }
+
+  const CARD_INFO = {
+    poc:{title:'Proof-of-Value — 7 days', html:'<p><strong>Deliverable:</strong> 3 filings → structured JSON + 3-page PDF report.<br><strong>Price:</strong> ₹40,000 (50% upfront).<br><strong>Why:</strong> Rapid validation to reduce investor risk.</p>'},
+    outstaff:{title:'Outstaffing & rapid teams', html:'<p><strong>Deliverable:</strong> specialist teams to plug into your project within 48 hours.<br><strong>Price:</strong> starting ₹35k/mo.<br><strong>Why:</strong> Scale dev capacity quickly without hiring.</p>'},
+    ux:{title:'UX & UI', html:'<p><strong>Deliverable:</strong> design sprints, flows & UI kits.<br><strong>Price:</strong> design sprints from ₹60k.<br><strong>Why:</strong> Improve conversion and product polish.</p>'},
+    web:{title:'Web & Web Apps', html:'<p><strong>Deliverable:</strong> landing pages, web apps, payments & analytics.<br><strong>Price:</strong> from ₹25k.<br><strong>Why:</strong> Fast, secure websites that convert visitors.</p>'},
+    sme:{title:'SME Ops — Automate', html:'<p><strong>Deliverable:</strong> invoicing, orders & CRM integrations.<br><strong>Price:</strong> from ₹70k.<br><strong>Why:</strong> Reduce manual work & errors by 60%+.</p>'}
+  };
+
+  function openModal(cardKey, e){
+    if(e) e.stopPropagation();
+    const mdl = document.getElementById('backdrop');
+    const content = document.getElementById('modalContent');
+    const info = CARD_INFO[cardKey] || {title:'Plan', html:'<p>We will follow up.</p>'};
+    document.getElementById('modalTitle').textContent = info.title;
+    content.innerHTML = info.html;
+    mdl.style.display = 'flex';
+    mdl.setAttribute('aria-hidden','false');
+    trackEvent('modal_open',{card:cardKey});
+  }
+  function closeModal(){
+    document.getElementById('backdrop').style.display='none';
+    document.getElementById('backdrop').setAttribute('aria-hidden','true');
+    trackEvent('modal_close',{});
+  }
+  function handleSubmit(e){
+    e.preventDefault();
+    const payload = {
+      name:document.getElementById('name').value,
+      email:document.getElementById('email').value,
+      company:document.getElementById('companyName').value,
+      budget:document.getElementById('budget').value
+    };
+    trackEvent('booking_submitted',payload);
+    alert('Thanks — we received your request. We will follow up via email.');
+    closeModal();
+    document.getElementById('bookingForm').reset();
+  }
+  // keyboard escape
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
